@@ -4,5 +4,7 @@ Flask-MySQLdb
 numpy
 werkzeug
 gunicorn
+opencv-python-headless
+twilio
 reportlab
-qrcode
+Pillow
