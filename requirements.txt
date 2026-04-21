@@ -1,5 +1,6 @@
 Flask
 PyMySQL
+Flask-MySQLdb
 numpy
 werkzeug
 gunicorn

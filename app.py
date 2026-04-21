@@ -5,7 +5,6 @@ from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import os
-import tensorflow as tf
 import numpy as np
 import cv2
 from twilio.rest import Client
