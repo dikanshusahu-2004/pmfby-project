@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Patwari Dashboard</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+
+body{
+background:#f4f6f9;
+}
+
+.card{
+border-radius:15px;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container mt-4">
+
+<div class="d-flex justify-content-between mb-3">
+
+<h3 class="text-success">📋 Patwari Claim Dashboard</h3>
+
+<a href="/logout" class="btn btn-danger">Logout</a>
+
+</div>
+
+<div class="card p-3">
+
+<table class="table table-bordered table-striped">
+
+<thead class="table-success">
+
+<tr>
+
+<th>ID</th>
+<th>Farmer Name</th>
+<th>Crop</th>
+<th>Village</th>
+<th>Status</th>
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for claim in claims %}
+
+<tr>
+
+<td>{{claim.id}}</td>
+
+<td>{{claim.name}}</td>
+
+<td>{{claim.crop_name}}</td>
+
+<td>{{claim.village}}</td>
+
+<td>
+
+{% if claim.patwari_status == "Approved" %}
+
+<span class="badge bg-success">Approved</span>
+
+{% elif claim.patwari_status == "Rejected" %}
+
+<span class="badge bg-danger">Rejected</span>
+
+{% else %}
+
+<span class="badge bg-warning text-dark">Pending</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if claim.patwari_status == "Pending" %}
+
+<a href="/patwari_verify/{{claim.id}}" class="btn btn-primary btn-sm">
+
+Verify
+
+</a>
+
+{% else %}
+
+<span class="text-muted">Completed</span>
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>

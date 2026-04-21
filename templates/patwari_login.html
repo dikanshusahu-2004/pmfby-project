@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patwari Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body{
+            background: linear-gradient(to right, #198754, #14532d);
+            height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+        .card{
+            width:400px;
+            border-radius:15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card shadow p-4">
+    <h3 class="text-center text-success mb-4">🌾 Patwari Verification Login</h3>
+
+    {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST">
+        <div class="mb-3">
+            <label>Username</label>
+            <input type="text" name="username" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" required>
+        </div>
+
+        <button class="btn btn-success w-100">Login</button>
+    </form>
+</div>
+
+</body>
+</html>

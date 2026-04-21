@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Insurance Dashboard</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+body { background:#f4f6f9; }
+.card { border-radius:15px; }
+</style>
+
+</head>
+<body>
+
+<div class="container mt-5">
+
+<div class="d-flex justify-content-between mb-4">
+    <h3 class="text-primary">🏢 Insurance Company Dashboard</h3>
+    <a href="/logout" class="btn btn-danger">Logout</a>
+</div>
+
+<div class="card shadow p-4">
+
+<table class="table table-bordered table-hover">
+
+<thead class="table-primary">
+<tr>
+<th>ID</th>
+<th>Farmer</th>
+<th>Village</th>
+<th>Crop</th>
+<th>Damage</th>
+<th>Yield</th>
+<th>Sum Insured</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody>
+{% for c in claims %}
+<tr>
+<td>{{ c.id }}</td>
+<td>{{ c.name }}</td>
+<td>{{ c.village }}</td>
+<td>{{ c.crop_name }}</td>
+<td>{{ c.damage_type }}</td>
+<td>{{ c.actual_yield }}</td>
+<td>₹ {{ c.sum_insured }}</td>
+
+<td>
+{% if c.insurance_status == "Approved" %}
+<span class="badge bg-success">Approved</span>
+{% elif c.insurance_status == "Rejected" %}
+<span class="badge bg-danger">Rejected</span>
+{% else %}
+<span class="badge bg-warning">Pending</span>
+{% endif %}
+</td>
+
+<td>
+<a href="/insurance_verify/{{ c.id }}" class="btn btn-primary btn-sm">
+Review
+</a>
+</td>
+
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Claim Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-light">
+
+<div class="container mt-4">
+
+<div class="card p-4 shadow">
+
+<h3 class="mb-3">📄 Claim Details</h3>
+
+<!-- ================= FARMER DETAILS ================= -->
+
+<h5>👨‍🌾 Farmer Details</h5>
+<p><b>Name:</b> {{ claim.name }}</p>
+<p><b>Mobile:</b> {{claim.mobile}}</p>
+<p><b>Village:</b> {{claim.village}}</p>
+<p><b>District:</b> {{claim.district}}</p>
+
+<hr>
+
+<!-- ================= INSURANCE DETAILS ================= -->
+
+<h5>🌾 Insurance Details</h5>
+<p><b>Name:</b> {{ claim.name }}</p>
+<p><b>Crop:</b> {{claim.crop_name}}</p>
+<p><b>Season:</b> {{claim.season}}</p>
+<p><b>Damage Type:</b> {{claim.damage_type}}</p>
+<p><b>Sum Insured:</b> ₹ {{claim.sum_insured}}</p>
+<p><b>Claim Amount:</b> ₹ {{claim.claim_amount}}</p>
+<p><b>Status:</b> {{claim.insurance_status}}</p>
+
+<hr>
+
+<!-- ================= BANK DETAILS ================= -->
+
+<h5>🏦 Bank Details</h5>
+<p><b>Bank Name:</b> {{claim.bank_name}}</p>
+<p><b>Account Number:</b> {{claim.account_number}}</p>
+<p><b>IFSC Code:</b> {{claim.ifsc_code}}</p>
+
+<hr>
+
+<!-- ================= VERIFICATION ================= -->
+
+<h5>🔍 Verification</h5>
+
+<p>
+Account: 
+{% if claim.account_verified == "Verified" %}
+<span class="badge bg-success">Verified</span>
+{% else %}
+<span class="badge bg-danger">Not Verified</span>
+{% endif %}
+</p>
+
+<p>
+Aadhaar: 
+{% if claim.aadhaar_verified == "Verified" %}
+<span class="badge bg-success">Verified</span>
+{% else %}
+<span class="badge bg-danger">Not Verified</span>
+{% endif %}
+</p>
+
+<p>
+DBT: 
+{% if claim.dbt_status == "Eligible" %}
+<span class="badge bg-success">Eligible</span>
+{% else %}
+<span class="badge bg-danger">Not Eligible</span>
+{% endif %}
+</p>
+
+<!-- VERIFY BUTTONS -->
+<form method="POST">
+    <button name="action" value="verify_account" class="btn btn-primary btn-sm">Verify Account</button>
+    <button name="action" value="verify_aadhaar" class="btn btn-success btn-sm">Verify Aadhaar</button>
+    <button name="action" value="verify_dbt" class="btn btn-info btn-sm">Verify DBT</button>
+</form>
+
+<hr>
+
+<!-- ================= APPROVAL SECTION ================= -->
+
+<h5>✅ Approval Section</h5>
+
+{% if claim.account_verified == "Verified" 
+   and claim.aadhaar_verified == "Verified" 
+   and claim.dbt_status == "Eligible" %}
+
+<form method="POST">
+
+<textarea name="reason" class="form-control" placeholder="Reason"></textarea>
+
+<button name="action" value="approve" class="btn btn-success mt-2 w-100">
+Approve
+</button>
+
+<button name="action" value="reject" class="btn btn-danger mt-2 w-100">
+Reject
+</button>
+
+</form>
+
+{% else %}
+
+<div class="alert alert-warning text-center">
+⚠️ Complete Verification First
+</div>
+
+{% endif %}
+
+<hr>
+
+<h5>💰 Payment Section</h5>
+
+{% if claim.bank_status == "Approved" %}
+
+<!-- STEP 1 BUTTON -->
+<button onclick="document.getElementById('transferForm').style.display='block'"
+    class="btn btn-success w-100">
+    💸 Transfer Payment
+</button>
+
+<!-- STEP 2 FORM (Hidden by default) -->
+<div id="transferForm" style="display:none; margin-top:15px;">
+
+<form method="POST">
+
+    <label>From Account</label>
+    <input type="text" name="from_account" class="form-control"
+           value="{{claim.account_number}}" required>
+
+    <label class="mt-2">To Account</label>
+    <input type="text" name="to_account" class="form-control"
+           value="{{claim.account_number}}" required>
+
+    <label class="mt-2">Amount</label>
+    <input type="number" name="amount" class="form-control"
+           value="{{claim.claim_amount}}" readonly>
+
+    <button type="submit" name="action" value="pay"
+        class="btn btn-primary mt-3 w-100">
+        Confirm Transfer
+    </button>
+
+</form>
+
+</div>
+
+{% elif claim.bank_status == "Paid" %}
+
+<div class="alert alert-success text-center">
+
+    <h5>✅ Payment Completed</h5>
+
+    <b>Transaction ID:</b> {{claim.transaction_id}} <br>
+    <b>Date:</b> {{claim.payment_date}}
+
+</div>
+{% if claim.bank_status == "Paid" %}
+
+<a href="/download_receipt/{{claim.id}}" class="btn btn-dark w-100 mt-2">
+    📄 Download Receipt (PDF)
+</a>
+
+
+{% endif %}
+{% endif %}
+
+<a href="/bank_dashboard" class="btn btn-secondary w-100">⬅ Back</a>
+
+</div>
+</div>
+
+</body>
+</html>

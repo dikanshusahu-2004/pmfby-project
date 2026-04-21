@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Crop Insurance Application</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+<div class="card shadow p-4">
+
+<h3 class="text-success mb-4">🌾 PMFBY Crop Insurance Claim Form</h3>
+
+<form method="POST" enctype="multipart/form-data">
+
+<h5 class="text-primary">1️⃣ Farmer Details</h5>
+<input type="text" name="name" class="form-control mb-2" placeholder="Farmer Name" required>
+<input type="text" name="mobile" class="form-control mb-2" placeholder="Mobile Number" required>
+<input type="text" name="aadhaar" class="form-control mb-3" placeholder="Aadhaar Number" required>
+
+<h5 class="text-primary">2️⃣ Land Details</h5>
+<input type="text" name="khasra" class="form-control mb-2" placeholder="Khasra / Khata Number" required>
+<input type="text" name="land_area" class="form-control mb-2" placeholder="Land Area (Hectare/Acre)" required>
+<input type="text" name="village" class="form-control mb-2" placeholder="Village" required>
+<input type="text" name="district" class="form-control mb-3" placeholder="District" required>
+
+<h5 class="text-primary">3️⃣ Crop Details</h5>
+<input type="text" name="crop_name" class="form-control mb-2" placeholder="Crop Name" required>
+<input type="date" name="sowing_date" class="form-control mb-2" required>
+<select name="season" class="form-control mb-3" required>
+<option value="">Select Season</option>
+<option>Kharif</option>
+<option>Rabi</option>
+</select>
+
+<h5 class="text-primary">4️⃣ Damage Details</h5>
+<select name="damage_type" class="form-control mb-2" required>
+<option value="">Select Damage Type</option>
+<option>Drought</option>
+<option>Flood</option>
+<option>Pest</option>
+<option>Heavy Rain</option>
+</select>
+<input type="date" name="incident_date" class="form-control mb-2" required>
+<input type="file" name="damage_image" class="form-control mb-3" required>
+
+<h5 class="text-primary">5️⃣ Bank Details</h5>
+<input type="text" name="bank_name" class="form-control mb-2" placeholder="Bank Name" required>
+<input type="text" name="account_number" class="form-control mb-2" placeholder="Account Number" required>
+<input type="text" name="ifsc_code" class="form-control mb-3" placeholder="IFSC Code" required>
+
+<h5 class="text-primary">6️⃣ Insurance Details</h5>
+<input type="text" name="policy_number" class="form-control mb-2" placeholder="Policy Number" required>
+<input type="number" name="sum_insured" class="form-control mb-3" placeholder="Sum Insured Amount" required>
+
+<button class="btn btn-success w-100">Submit Claim Application</button>
+
+</form>
+
+</div>
+</div>
+
+</body>
+</html>
