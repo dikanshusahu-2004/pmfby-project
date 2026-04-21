@@ -2,7 +2,9 @@ Flask
 PyMySQL
 Flask-MySQLdb
 numpy
+requests
 werkzeug
+tensorflow
 gunicorn
 opencv-python-headless
 twilio

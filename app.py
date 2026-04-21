@@ -8,6 +8,7 @@ import os
 import numpy as np
 import cv2
 from twilio.rest import Client
+import tensorflow as tf
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from flask import send_file
@@ -27,13 +28,12 @@ if not os.path.exists('static/uploads'):
 # -------- MYSQL CONFIG --------
 import os
 
-app.config['MYSQL_HOST'] = os.getenv('DB_HOST', 'localhost')
-app.config['MYSQL_USER'] = os.getenv('DB_USER', 'root')
-app.config['MYSQL_PASSWORD'] = os.getenv('DB_PASSWORD', '')
-app.config['MYSQL_DB'] = os.getenv('DB_NAME', 'pmfby')
+app.config['MYSQL_HOST'] = os.getenv('DB_HOST')
+app.config['MYSQL_USER'] = os.getenv('DB_USER')
+app.config['MYSQL_PASSWORD'] = os.getenv('DB_PASSWORD')
+app.config['MYSQL_DB'] = os.getenv('DB_NAME')
 
-# ---------------- LOAD AI MODEL ----------------
-model = tf.keras.models.load_model("crop_model.h5")
+mysql = MySQL(app)
 
 # Create upload folder if not exists
 if not os.path.exists("static/uploads"):
@@ -82,6 +82,11 @@ def extract_gps(image_path):
 def home():
     return render_template("home.html")
 
+import os
+
+if _name_ == "_main_":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))    
+
 # ================= LOGIN =================
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -89,7 +94,7 @@ def login():
         farmer_id = request.form['farmer_id']
         password = request.form['password']
 
-        cur = mysql.connection.cursor()
+         cur = mysql.connection.cursor()
         cur.execute("SELECT * FROM farmers WHERE farmer_id=%s", (farmer_id,))
         user = cur.fetchone()
         cur.close()
@@ -115,7 +120,7 @@ def register():
 
         hashed_password = generate_password_hash(password)
 
-        cur = mysql.connection.cursor()
+         cur = mysql.connection.cursor()
         cur.execute(
             "INSERT INTO farmers (name, mobile, farmer_id, password) VALUES (%s,%s,%s,%s)",
             (name, mobile, farmer_id, hashed_password)
@@ -147,7 +152,7 @@ def patwari_dashboard():
         return redirect("/patwari_login")
 
     import MySQLdb.cursors
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("SELECT * FROM insurance_claims")
     claims = cur.fetchall()
@@ -170,26 +175,22 @@ def upload():
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
 
-            import cv2
-            import numpy as np
+            import requests
 
-            img = cv2.imread(filepath)
-            img = cv2.resize(img, (128,128))
-            img = img / 255.0
-            img = np.expand_dims(img, axis=0)
+            API_URL = "https://your-model-api.onrender.com/predict"   # 👈 change this later
 
-            result = model.predict(img)
+            try:
+                with open(filepath, "rb") as f:
+                    response = requests.post(API_URL, files={"file": f})
 
-            # ✅ IMPORTANT LINE (MISSING THA)
-            value = result[0][0]
+                if response.status_code == 200:
+                    prediction = response.json().get("prediction")
+                else:
+                    prediction = "Prediction Error ❌"
 
-            print("Prediction Value:", value)
-
-            # ✅ AB ERROR NAHI AAYEGA
-            if value < 0.15:
-                prediction = "Damaged"
-            else:
-                prediction = "Healthy"
+            except Exception as e:
+                print("API Error:", e)
+                prediction = "Server Error ❌"
 
     return render_template("upload.html", prediction=prediction)
 # ================= NEW CLAIM APPLICATION =================
@@ -205,7 +206,7 @@ def new_application():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         file.save(filepath)
 
-        cur = mysql.connection.cursor()
+         cur = mysql.connection.cursor()
         cur.execute("""
             INSERT INTO insurance_claims (
             farmer_id, name, mobile, aadhaar,
@@ -254,7 +255,7 @@ def status():
         return redirect("/")
 
     import MySQLdb.cursors
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+      cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("SELECT * FROM insurance_claims WHERE farmer_id=%s",
                 (session['farmer_id'],))
@@ -309,7 +310,7 @@ def insurance_dashboard():
         return redirect("/insurance_login")
 
     import MySQLdb.cursors
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     # Only Patwari Approved Claims
     cur.execute("""
@@ -484,7 +485,7 @@ def bank_login():
         password = request.form['password']
 
         import MySQLdb.cursors
-        cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+         cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
         cur.execute("SELECT * FROM bank_users WHERE username=%s AND password=%s",
                     (username,password))
@@ -500,7 +501,7 @@ def bank_login():
 def bank_dashboard():
 
     import MySQLdb.cursors
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+     cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("SELECT COUNT(*) as total FROM insurance_claims")
     total = cur.fetchone()['total']
@@ -722,7 +723,7 @@ def download_receipt(id):
 @app.route("/bank_pay/<int:id>")
 def bank_pay(id):
 
-    cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+   cur = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
 
     cur.execute("SELECT account_number, ifsc_code FROM insurance_claims WHERE id=%s",(id,))
     claim = cur.fetchone()
