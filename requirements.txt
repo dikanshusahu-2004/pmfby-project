@@ -8,3 +8,4 @@ opencv-python-headless
 twilio
 reportlab
 Pillow
+qrcode
