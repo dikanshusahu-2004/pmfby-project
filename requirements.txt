@@ -1,6 +1,5 @@
 Flask
 Flask-MySQLdb
-tensorflow
 numpy
 opencv-python
 werkzeug
@@ -8,4 +7,3 @@ gunicorn
 mysqlclient
 reportlab
 qrcode
-tensorflow
