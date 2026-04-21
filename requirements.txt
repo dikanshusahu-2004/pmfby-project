@@ -1,9 +1,7 @@
 Flask
-Flask-MySQLdb
+PyMySQL
 numpy
-opencv-python
 werkzeug
 gunicorn
-mysqlclient
 reportlab
 qrcode

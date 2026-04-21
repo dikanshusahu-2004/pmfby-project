@@ -13,6 +13,8 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
 from reportlab.lib.styles import getSampleStyleSheet
 from flask import send_file
 import io
+import pymysql
+pymysql.install_as_MySQLdb()
 app = Flask(__name__)
 app.secret_key = "secretkey"
 
